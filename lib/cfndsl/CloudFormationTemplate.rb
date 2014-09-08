@@ -80,6 +80,13 @@ module CfnDsl
       klass = Class.new(CfnDsl::ResourceDefinition)
       klassname = name.split("::").join("_")
       type_module.const_set( klassname, klass )
+
+      klass.instance_eval do
+        define_method(:initialize) do |*values, &block|
+          @Type = name
+        end
+      end
+
       type["Properties"].each_pair do |pname, ptype|
         if( ptype.instance_of? String )
           create_klass = type_module.const_get( ptype );
